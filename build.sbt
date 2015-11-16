@@ -209,6 +209,15 @@ lazy val parseBase = crossProject.in(file("parse"))
 lazy val parse = parseBase.jvm
 lazy val parseJS = parseBase.js
 
+lazy val scalajs = project
+  .settings(
+    description := "circe scalajs",
+    moduleName := "circe-scalajs"
+  )
+  .settings(allSettings)
+  .enablePlugins(ScalaJSPlugin)
+  .dependsOn(parseJS)
+
 lazy val testsBase = crossProject.in(file("tests"))
   .settings(
     description := "circe tests",
@@ -239,7 +248,7 @@ lazy val testsBase = crossProject.in(file("tests"))
   .jsConfigure(
     _.copy(id = "testsJS").settings(
       libraryDependencies += "org.spire-math" %% "jawn-parser" % "0.8.3" % "compile-time"
-    )
+    ).dependsOn(scalajs)
   )
   .dependsOn(coreBase, genericBase, literalBase, refinedBase, parseBase)
 
@@ -412,6 +421,7 @@ val jsProjects = Seq(
   "genericJS",
   "refinedJS",
   "parseJS",
+  "scalajs",
   "testsJS"
 )
 
